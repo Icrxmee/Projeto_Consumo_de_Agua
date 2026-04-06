@@ -1,0 +1,107 @@
+body{
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+
+    background-color: #0b1524;
+    background-image: url(./assetes/assets/b66f12ee-680d-4041-9abf-3844a4bbcac3.jpg);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
+}
+
+h1{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-size: 70px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    /* Contorno verde neon; “miolo” transparente = vê-se o fundo */
+    color: transparent;
+    -webkit-text-stroke: 2px #39ff14;
+    paint-order: stroke fill;
+}
+
+#conteiner-1{
+    text-align: center;
+
+    width: fit-content;
+    margin-left: auto;
+    margin-right: 1.5rem;
+
+    background-color: #2072ec;
+    border: 1px solid #eceff179;
+    border-radius: 8px;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem 0.35rem;
+
+    text-decoration: none;
+
+    transition: background 0.2s ease;
+
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-weight: 700;
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+
+    font-family: "Italic ", sans-serif;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+#conteiner-1:hover{
+    background: #1b4f92;
+}
+
+
+#conteiner-2{
+    display: inline-block;
+    vertical-align: top;
+    text-align: left;
+    margin-top: 13rem;
+    margin-left: 5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid #ffffff57;
+    box-sizing: border-box;
+    box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.55),
+        12px 6px 22px rgba(0, 0, 0, 0.28),
+        -12px 6px 22px rgba(0, 0, 0, 0.28);
+}
+
+
+#conteiner-2 h2{
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto 0.75rem;
+    line-height: 1.2;
+    text-align: center;
+}
+
+#conteiner-2 .conteiner-2-texto{
+    margin: 0;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+    text-align: left;
+}
+
+
+
+
+
+
+
+
+
+
+
