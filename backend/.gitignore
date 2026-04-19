@@ -1,5 +1,0 @@
-ca.pem
-node_modules/
-db.js
-.env
-.gitignore
