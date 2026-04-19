@@ -239,6 +239,95 @@ h1{
     text-align: left;
 }
 
+/* Página login.html: conteúdo centralizado, campos compactos e azul-marinho */
+.pagina-login{
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+}
+
+.pagina-login__card{
+    width: 100%;
+    max-width: 260px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 1rem 1rem 1.15rem;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 10px;
+    box-shadow:
+        0 10px 24px rgba(0, 0, 0, 0.45),
+        0 4px 12px rgba(0, 0, 0, 0.25);
+    background: rgba(13, 27, 42, 0.92);
+    color: #eceff1;
+}
+
+.pagina-login__titulo{
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #eceff1;
+    margin: 0 0 0.75rem;
+    -webkit-text-stroke: 0;
+    paint-order: normal;
+}
+
+.form-acesso--login-pagina{
+    align-items: stretch;
+    gap: 0.25rem;
+}
+
+.form-acesso--login-pagina .form-acesso__label{
+    font-size: 0.72rem;
+    margin-top: 0.45rem;
+    text-align: center;
+}
+
+.form-acesso--login-pagina .form-acesso__label:first-of-type{
+    margin-top: 0;
+}
+
+.form-acesso__input--login-pagina{
+    max-width: 100%;
+    padding: 0.32rem 0.45rem;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: #0a1628;
+    color: #eceff1;
+}
+
+.form-acesso__input--login-pagina:focus{
+    border-color: #39ff14;
+    box-shadow: 0 0 0 1px rgba(57, 255, 20, 0.3);
+}
+
+.pagina-login__btn-enviar{
+    margin-top: 0.6rem;
+    width: 100%;
+    max-width: 11rem;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.pagina-login__rodape{
+    margin: 0.85rem 0 0;
+    font-size: 0.8rem;
+    color: #b0bec5;
+}
+
+.pagina-login__rodape a{
+    color: #69b7ff;
+    text-decoration: none;
+}
+
+.pagina-login__rodape a:hover{
+    text-decoration: underline;
+}
+
 
 
 
