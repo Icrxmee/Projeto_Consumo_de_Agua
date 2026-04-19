@@ -120,6 +120,13 @@ h1{
     color: #eceff1;
 }
 
+/* Login (modal em index): um pouco maior e levemente acima do centro */
+#tela-login .tela-sobreposta__painel{
+    max-width: 460px;
+    padding: 1.4rem 1.45rem 1.6rem;
+    transform: translateY(-20px);
+}
+
 .tela-sobreposta__titulo{
     font-family: "Bebas Neue", sans-serif;
     font-size: 2rem;
@@ -242,18 +249,23 @@ h1{
 /* Página login.html: conteúdo centralizado, campos compactos e azul-marinho */
 .pagina-login{
     margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1.25rem;
+    box-sizing: border-box;
 }
 
 .pagina-login__card{
     width: 100%;
-    max-width: 260px;
+    max-width: 340px;
     margin: 0 auto;
+    /* Levemente acima do centro óptico da tela */
+    transform: translateY(-20px);
     text-align: center;
-    padding: 1rem 1rem 1.15rem;
+    padding: 1.35rem 1.4rem 1.45rem;
     border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 10px;
     box-shadow:
@@ -265,12 +277,12 @@ h1{
 
 .pagina-login__titulo{
     font-family: "Bebas Neue", sans-serif;
-    font-size: 2rem;
+    font-size: 2.25rem;
     font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: #eceff1;
-    margin: 0 0 0.75rem;
+    margin: 0 0 0.85rem;
     -webkit-text-stroke: 0;
     paint-order: normal;
 }
@@ -281,7 +293,7 @@ h1{
 }
 
 .form-acesso--login-pagina .form-acesso__label{
-    font-size: 0.72rem;
+    font-size: 0.8rem;
     margin-top: 0.45rem;
     text-align: center;
 }
@@ -292,9 +304,9 @@ h1{
 
 .form-acesso__input--login-pagina{
     max-width: 100%;
-    padding: 0.32rem 0.45rem;
-    font-size: 0.8rem;
-    border-radius: 5px;
+    padding: 0.45rem 0.55rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.18);
     background: #0a1628;
     color: #eceff1;
@@ -306,11 +318,11 @@ h1{
 }
 
 .pagina-login__btn-enviar{
-    margin-top: 0.6rem;
+    margin-top: 0.65rem;
     width: 100%;
-    max-width: 11rem;
-    padding: 0.35rem 0.75rem;
-    font-size: 0.75rem;
+    max-width: 12.5rem;
+    padding: 0.42rem 0.85rem;
+    font-size: 0.82rem;
 }
 
 .pagina-login__rodape{
