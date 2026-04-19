@@ -241,3 +241,13 @@ const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`)
 })
+
+
+app.get("/test-db", async (req, res) => {
+    try {
+        const [rows] = await db.promise().query("SELECT 1 + 1 AS result");
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
