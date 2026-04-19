@@ -28,39 +28,183 @@ h1{
     paint-order: stroke fill;
 }
 
-#conteiner-1{
+.barra-topo{
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 1.5rem;
+}
+
+.btn-principal{
     text-align: center;
 
     width: fit-content;
-    margin-left: auto;
-    margin-right: 1.5rem;
 
     background-color: #2072ec;
     border: 1px solid #eceff179;
     border-radius: 8px;
-  
-    display: flex;
+
+    display: inline-flex;
     justify-content: center;
     align-items: center;
-    padding: 0.25rem 0.35rem;
+    padding: 0.25rem 0.75rem;
 
     text-decoration: none;
+    color: #eceff1;
+    cursor: pointer;
 
     transition: background 0.2s ease;
 
-    font-family: 'Libre Baskerville', Georgia, serif;
+    font-family: "Italic ", sans-serif;
     font-weight: 700;
     font-style: normal;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-
-    font-family: "Italic ", sans-serif;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
-#conteiner-1:hover{
+.btn-principal:hover{
     background: #1b4f92;
+}
+
+.btn-principal:focus-visible{
+    outline: 2px solid #39ff14;
+    outline-offset: 2px;
+}
+
+.form-acesso__btn-cadastrar{
+    align-self: center;
+    margin-top: 0.65rem;
+}
+
+#conteiner-1{
+    margin: 0;
+}
+
+.tela-sobreposta{
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.tela-sobreposta[hidden]{
+    display: none !important;
+}
+
+.tela-sobreposta__backdrop{
+    position: absolute;
+    inset: 0;
+    background-color: rgba(11, 21, 36, 0.82);
+    background-image: url(./assetes/assets/b66f12ee-680d-4041-9abf-3844a4bbcac3.jpg);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: cover;
+    background-blend-mode: multiply;
+}
+
+.tela-sobreposta__painel{
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+    padding: 1.25rem 1.35rem 1.5rem;
+    border: 1px solid #ffffff57;
+    box-sizing: border-box;
+    box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.55),
+        12px 6px 22px rgba(0, 0, 0, 0.28),
+        -12px 6px 22px rgba(0, 0, 0, 0.28);
+    background: rgba(11, 21, 36, 0.75);
+    color: #eceff1;
+}
+
+.tela-sobreposta__titulo{
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #eceff1;
+    text-align: center;
+    margin: 0 0 1rem;
+}
+
+.tela-sobreposta__fechar{
+    position: absolute;
+    top: 0.5rem;
+    right: 0.6rem;
+    border: none;
+    background: transparent;
+    color: #eceff1;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0.15rem 0.35rem;
+    opacity: 0.85;
+    transition: opacity 0.2s ease;
+}
+
+.tela-sobreposta__fechar:hover{
+    opacity: 1;
+}
+
+.form-acesso{
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.form-acesso__label{
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-top: 0.35rem;
+}
+
+.form-acesso__label:first-of-type{
+    margin-top: 0;
+}
+
+.form-acesso__input{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem 0.65rem;
+    border-radius: 6px;
+    border: 1px solid #ffffff57;
+    background: rgba(0, 0, 0, 0.35);
+    color: #eceff1;
+}
+
+.form-acesso__input::placeholder{
+    color: #b0bec5;
+}
+
+.form-acesso__input:focus{
+    outline: none;
+    border-color: #39ff14;
+    box-shadow: 0 0 0 1px rgba(57, 255, 20, 0.35);
+}
+
+.form-acesso__mensagem{
+    min-height: 1.25rem;
+    margin: 0.35rem 0 0;
+    font-size: 0.875rem;
+}
+
+.form-acesso__mensagem.erro{
+    color: #ff8a80;
+}
+
+.form-acesso__mensagem.sucesso{
+    color: #69f0ae;
+}
+
+.btn-principal--enviar{
+    margin-top: 0.75rem;
+    align-self: center;
+    min-width: 10rem;
+    padding: 0.4rem 1rem;
 }
 
 

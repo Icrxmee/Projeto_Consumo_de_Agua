@@ -13,8 +13,10 @@
 <body>
     <h1><span class="h1-titulo">Gerenciamento de Água</span></h1>
 
-    <div id="conteiner-1">
-        Login
+    <div class="barra-topo">
+        <button type="button" id="conteiner-1" class="btn-principal" aria-haspopup="dialog" aria-controls="tela-login">
+            Login
+        </button>
     </div>
 
     <div id="conteiner-2">
@@ -27,7 +29,55 @@
             qualquer momento, basta "logar" e verificar suas iformações.
         </p>
     </div>
-    
-    <div></div>
+
+    <div id="tela-login" class="tela-sobreposta" hidden>
+        <div class="tela-sobreposta__backdrop" data-fechar-overlay></div>
+        <div class="tela-sobreposta__painel" role="dialog" aria-modal="true" aria-labelledby="titulo-login">
+            <button type="button" class="tela-sobreposta__fechar" data-fechar-overlay aria-label="Fechar">&times;</button>
+            <h2 id="titulo-login" class="tela-sobreposta__titulo">Login</h2>
+            <form id="form-login" class="form-acesso" novalidate>
+                <label class="form-acesso__label" for="login-nome">Nome</label>
+                <input class="form-acesso__input" type="text" id="login-nome" name="nome" autocomplete="name" required>
+
+                <label class="form-acesso__label" for="login-email">E-mail</label>
+                <input class="form-acesso__input" type="email" id="login-email" name="email" autocomplete="email" required>
+
+                <label class="form-acesso__label" for="login-senha">Senha</label>
+                <input class="form-acesso__input" type="password" id="login-senha" name="senha" autocomplete="current-password" required>
+
+                <button type="button" id="btn-cadastrar" class="btn-principal form-acesso__btn-cadastrar" aria-haspopup="dialog" aria-controls="tela-cadastro">
+                    Cadastrar
+                </button>
+
+                <p id="login-mensagem" class="form-acesso__mensagem" role="status" aria-live="polite"></p>
+
+                <button type="submit" class="btn-principal btn-principal--enviar">Entrar</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="tela-cadastro" class="tela-sobreposta" hidden>
+        <div class="tela-sobreposta__backdrop" data-fechar-overlay></div>
+        <div class="tela-sobreposta__painel" role="dialog" aria-modal="true" aria-labelledby="titulo-cadastro">
+            <button type="button" class="tela-sobreposta__fechar" data-fechar-overlay aria-label="Fechar">&times;</button>
+            <h2 id="titulo-cadastro" class="tela-sobreposta__titulo">Cadastrar</h2>
+            <form id="form-cadastro" class="form-acesso" novalidate>
+                <label class="form-acesso__label" for="cadastro-nome">Nome</label>
+                <input class="form-acesso__input" type="text" id="cadastro-nome" name="nome" autocomplete="name" required>
+
+                <label class="form-acesso__label" for="cadastro-email">E-mail</label>
+                <input class="form-acesso__input" type="email" id="cadastro-email" name="email" autocomplete="email" required>
+
+                <label class="form-acesso__label" for="cadastro-senha">Senha</label>
+                <input class="form-acesso__input" type="password" id="cadastro-senha" name="senha" autocomplete="new-password" required>
+
+                <p id="cadastro-mensagem" class="form-acesso__mensagem" role="status" aria-live="polite"></p>
+
+                <button type="submit" class="btn-principal btn-principal--enviar">Criar conta</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
