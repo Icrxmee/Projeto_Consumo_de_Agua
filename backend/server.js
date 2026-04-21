@@ -26,12 +26,23 @@ app.get("/", (req, res) => {
 // ==================== IMÓVEIS ====================
 
 app.get("/imoveis", (req, res) => {
-    const sql = "SELECT * FROM imovel"
+    const sql = `
+        SELECT 
+            i.imovel_id,
+            i.endereco,
+            i.valor,
+            i.area,
+            p.nome AS proprietario,
+            t.descricao AS tipo
+        FROM TbImovel i
+        LEFT JOIN TbPessoas p ON i.proprietario_id = p.pessoa_id
+        LEFT JOIN TbImovelTipo t ON i.imovel_tipo_id = t.imovel_tipo_id
+    `
 
     db.query(sql, (err, result) => {
         if (err) {
-            console.error("Erro ao Buscar Imóveis:", err)
-            return res.status(500).json({ erro: "Erro ao Buscar Imóveis" })
+            console.error("Erro ao buscar imóveis:", err)
+            return res.status(500).json({ erro: "Erro ao buscar imóveis" })
         }
 
         res.json(result)
@@ -39,14 +50,25 @@ app.get("/imoveis", (req, res) => {
 })
 
 app.post("/imoveis", (req, res) => {
-    const { nome, endereco } = req.body
+    const { endereco, valor, area, proprietario_id, imovel_tipo_id } = req.body
 
-    const sql = "INSERT INTO imovel (nome, endereco) VALUES (?, ?)"
+    if (!endereco || !valor || !area || !proprietario_id || !imovel_tipo_id) {
+        return res.status(400).json({ erro: "Preencha todos os campos" })
+    }
 
-    db.query(sql, [nome, endereco], (err, result) => {
+    const sql = `
+        INSERT INTO TbImovel 
+        (endereco, valor, area, proprietario_id, imovel_tipo_id)
+        VALUES (?, ?, ?, ?, ?)
+    `
+
+    db.query(sql, [endereco, valor, area, proprietario_id, imovel_tipo_id], (err, result) => {
         if (err) {
             console.error("Erro ao cadastrar imóvel:", err)
-            return res.status(500).json({ erro: "Erro ao cadastrar imóvel" })
+            return res.status(500).json({ 
+                erro: "Erro ao cadastrar imóvel",
+                detalhe: err.message
+            })
         }
 
         res.status(201).json({
@@ -94,40 +116,59 @@ app.post("/medidores", (req, res) => {
 
 // ==================== LEITURAS ====================
 
-app.get("/leituras", (req, res) => {
-    const sql = "SELECT * FROM leitura"
+app.get("/medicoes", (req, res) => {
+    const sql = `
+        SELECT 
+            m.medicao_id,
+            m.leitura,
+            m.datahora,
+            i.endereco,
+            p.nome AS proprietario,
+            t.descricao AS tipo
+        FROM TbMedicao m
+        JOIN TbImovel i ON m.imovel_id = i.imovel_id
+        JOIN TbPessoas p ON i.proprietario_id = p.pessoa_id
+        JOIN TbImovelTipo t ON i.imovel_tipo_id = t.imovel_tipo_id
+        ORDER BY m.datahora DESC
+    `
 
     db.query(sql, (err, result) => {
         if (err) {
-            console.error("Erro ao buscar leituras:", err)
-            return res.status(500).json({ erro: "Erro ao buscar leituras" })
+            console.error("Erro ao buscar medições:", err)
+            return res.status(500).json({ erro: "Erro ao buscar medições" })
         }
 
         res.json(result)
     })
 })
 
-app.post("/leituras", (req, res) => {
-    const { medidor_id, valor, data_leitura } = req.body
+app.post("/medicoes", (req, res) => {
+    const { leitura, imovel_id } = req.body
 
-    const sql = "INSERT INTO leitura (medidor_id, valor, data_leitura) VALUES (?, ?, ?)"
+    if (!leitura || !imovel_id) {
+        return res.status(400).json({ erro: "Preencha todos os campos" })
+    }
 
-    db.query(sql, [medidor_id, valor, data_leitura], (err, result) => {
+    const sql = `
+        INSERT INTO TbMedicao (leitura, datahora, imovel_id)
+        VALUES (?, NOW(), ?)
+    `
+
+    db.query(sql, [leitura, imovel_id], (err, result) => {
         if (err) {
-            console.error("Erro ao cadastrar leitura:", err)
+            console.error("Erro ao cadastrar medição:", err)
             return res.status(500).json({
-                erro: "Erro ao cadastrar leitura",
+                erro: "Erro ao cadastrar medição",
                 detalhe: err.message
             })
         }
 
         res.status(201).json({
-            mensagem: "Leitura cadastrada com sucesso",
+            mensagem: "Medição cadastrada com sucesso",
             id: result.insertId
         })
     })
 })
-
 // ==================== CONSUMO (JOIN) ====================
 
 app.get("/consumo", (req, res) => {
@@ -167,8 +208,8 @@ app.post("/usuarios/cadastro", async (req, res) => {
 
     try {
         const [usuarioExistente] = await db.promise().query(
-            "SELECT * FROM usuario WHERE email = ?",
-            [email]
+            "SELECT * FROM TbUsuarios WHERE login = ?",
+            [email] // email vira login
         )
 
         if (usuarioExistente.length > 0) {
@@ -178,7 +219,7 @@ app.post("/usuarios/cadastro", async (req, res) => {
         const senhaHash = await bcrypt.hash(senha, 10)
 
         const [result] = await db.promise().query(
-            "INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)",
+            "INSERT INTO TbUsuarios (nome, login, senha) VALUES (?, ?, ?)",
             [nome, email, senhaHash]
         )
 
@@ -203,8 +244,8 @@ app.post("/usuarios/login", async (req, res) => {
 
     try {
         const [usuarios] = await db.promise().query(
-            "SELECT * FROM usuario WHERE email = ?",
-            [email]
+            "SELECT * FROM TbUsuarios WHERE login = ?",
+            [email] // email vira login
         )
 
         if (usuarios.length === 0) {
@@ -224,7 +265,7 @@ app.post("/usuarios/login", async (req, res) => {
             usuario: {
                 id: usuario.usuario_id,
                 nome: usuario.nome,
-                email: usuario.email
+                email: usuario.login // retorna como email pro front
             }
         })
 
