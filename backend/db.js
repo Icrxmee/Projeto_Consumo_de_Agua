@@ -1,8 +1,6 @@
 require("dotenv").config()
 
 const mysql = require("mysql2")
-const fs = require("fs")
-const path = require("path")
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
@@ -15,19 +13,19 @@ const pool = mysql.createPool({
     connectionLimit: 10,
     queueLimit: 0,
 
-ssl: {
-    rejectUnauthorized: false
-}
+    ssl: {
+        rejectUnauthorized: false
+    }
 })
 
-
+// TESTE DE CONEXÃO
 pool.getConnection((err, connection) => {
     if (err) {
         console.error("Erro ao conectar no banco:", err)
         return
     }
 
-    console.log("Conectado ao MySQL")
+    console.log("Conectado ao MySQL (Railway)")
     connection.release()
 })
 
