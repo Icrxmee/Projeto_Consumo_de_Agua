@@ -1,14 +1,16 @@
-(function () {
+document.addEventListener("DOMContentLoaded", function () {
+
   const API_BASE = "https://api-consumo-agua.onrender.com";
 
+  // =========================
+  // LOGIN
+  // =========================
   const formLogin = document.getElementById("form-login");
 
   if (formLogin) {
     formLogin.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const nomeInput = document.getElementById("login-nome");
-      const nome = nomeInput ? nomeInput.value.trim() : ""; 
       const email = document.getElementById("login-email").value.trim();
       const senha = document.getElementById("login-senha").value;
 
@@ -41,14 +43,16 @@
     });
   }
 
+  // =========================
+  // CADASTRO
+  // =========================
   const formCadastro = document.getElementById("form-cadastro");
 
   if (formCadastro) {
     formCadastro.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const nomeInput = document.getElementById("login-nome");
-      const nome = nomeInput ? nomeInput.value.trim() : "";
+      const nome = document.getElementById("cadastro-nome").value.trim();
       const email = document.getElementById("cadastro-email").value.trim();
       const senha = document.getElementById("cadastro-senha").value;
 
@@ -72,7 +76,6 @@
         }
 
         alert("Cadastro realizado com sucesso!");
-
         formCadastro.reset();
 
       } catch (err) {
@@ -81,4 +84,4 @@
     });
   }
 
-})();
+});
