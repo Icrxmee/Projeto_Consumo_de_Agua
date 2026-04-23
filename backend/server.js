@@ -34,9 +34,9 @@ app.get("/imoveis", (req, res) => {
             i.area,
             p.nome AS proprietario,
             t.descricao AS tipo
-        FROM TbImovel i
-        LEFT JOIN TbPessoas p ON i.proprietario_id = p.pessoa_id
-        LEFT JOIN TbImovelTipo t ON i.imovel_tipo_id = t.imovel_tipo_id
+        FROM tbimovel i
+        LEFT JOIN tbpessoas p ON i.proprietario_id = p.pessoa_id
+        LEFT JOIN tbimoveltipo t ON i.imovel_tipo_id = t.imovel_tipo_id
     `
 
     db.query(sql, (err, result) => {
@@ -57,7 +57,7 @@ app.post("/imoveis", (req, res) => {
     }
 
     const sql = `
-        INSERT INTO TbImovel 
+        INSERT INTO tbimovel 
         (endereco, valor, area, proprietario_id, imovel_tipo_id)
         VALUES (?, ?, ?, ?, ?)
     `
@@ -81,7 +81,8 @@ app.post("/imoveis", (req, res) => {
 // ==================== MEDIDORES ====================
 
 app.get("/medidores", (req, res) => {
-    const sql = "SELECT * FROM medidor"
+    // NÃO EXISTE tabela medidor → adaptado para tbmedicao
+    const sql = "SELECT * FROM tbmedicao"
 
     db.query(sql, (err, result) => {
         if (err) {
@@ -94,21 +95,22 @@ app.get("/medidores", (req, res) => {
 })
 
 app.post("/medidores", (req, res) => {
-    const { imovel_id, codigo, local_instalacao, data_instalacao } = req.body
+    // adaptado → vira medição
+    const { imovel_id, leitura } = req.body
 
     const sql = `
-        INSERT INTO medidor (imovel_id, codigo, local_instalacao, data_instalacao)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO tbmedicao (imovel_id, leitura, datahora)
+        VALUES (?, ?, NOW())
     `
 
-    db.query(sql, [imovel_id, codigo, local_instalacao, data_instalacao], (err, result) => {
+    db.query(sql, [imovel_id, leitura], (err, result) => {
         if (err) {
             console.error("Erro ao cadastrar medidor:", err)
             return res.status(500).json({ erro: "Erro ao cadastrar medidor" })
         }
 
         res.status(201).json({
-            mensagem: "Medidor cadastrado com sucesso",
+            mensagem: "Registro criado com sucesso",
             id: result.insertId
         })
     })
@@ -125,10 +127,10 @@ app.get("/medicoes", (req, res) => {
             i.endereco,
             p.nome AS proprietario,
             t.descricao AS tipo
-        FROM TbMedicao m
-        JOIN TbImovel i ON m.imovel_id = i.imovel_id
-        JOIN TbPessoas p ON i.proprietario_id = p.pessoa_id
-        JOIN TbImovelTipo t ON i.imovel_tipo_id = t.imovel_tipo_id
+        FROM tbmedicao m
+        JOIN tbimovel i ON m.imovel_id = i.imovel_id
+        JOIN tbpessoas p ON i.proprietario_id = p.pessoa_id
+        JOIN tbimoveltipo t ON i.imovel_tipo_id = t.imovel_tipo_id
         ORDER BY m.datahora DESC
     `
 
@@ -150,7 +152,7 @@ app.post("/medicoes", (req, res) => {
     }
 
     const sql = `
-        INSERT INTO TbMedicao (leitura, datahora, imovel_id)
+        INSERT INTO tbmedicao (leitura, datahora, imovel_id)
         VALUES (?, NOW(), ?)
     `
 
@@ -169,18 +171,21 @@ app.post("/medicoes", (req, res) => {
         })
     })
 })
-// ==================== CONSUMO (JOIN) ====================
+
+// ==================== CONSUMO ====================
 
 app.get("/consumo", (req, res) => {
+    // adaptado para seu modelo REAL
     const sql = `
         SELECT 
-            i.nome AS imovel,
-            m.codigo AS medidor,
-            l.valor,
-            l.data_leitura
-        FROM leitura l
-        JOIN medidor m ON l.medidor_id = m.medidor_id
-        JOIN imovel i ON m.imovel_id = i.imovel_id
+            i.endereco AS imovel,
+            p.nome AS proprietario,
+            m.leitura,
+            m.datahora
+        FROM tbmedicao m
+        JOIN tbimovel i ON m.imovel_id = i.imovel_id
+        JOIN tbpessoas p ON i.proprietario_id = p.pessoa_id
+        ORDER BY m.datahora DESC
     `
 
     db.query(sql, (err, result) => {
@@ -208,7 +213,7 @@ app.post("/usuarios/cadastro", async (req, res) => {
 
     try {
         const [usuarioExistente] = await db.promise().query(
-            "SELECT usuario_id FROM TbUsuarios WHERE login = ?",
+            "SELECT usuario_id FROM tbusuarios WHERE login = ?",
             [email]
         )
 
@@ -219,7 +224,7 @@ app.post("/usuarios/cadastro", async (req, res) => {
         const senhaHash = await bcrypt.hash(senha, 10)
 
         const [result] = await db.promise().query(
-            `INSERT INTO TbUsuarios 
+            `INSERT INTO tbusuarios 
             (nome, login, senha, atualizado_em) 
             VALUES (?, ?, ?, NOW())`,
             [nome, email, senhaHash]
@@ -249,8 +254,8 @@ app.post("/usuarios/login", async (req, res) => {
 
     try {
         const [usuarios] = await db.promise().query(
-            "SELECT * FROM TbUsuarios WHERE login = ?",
-            [email] // email vira login
+            "SELECT * FROM tbusuarios WHERE login = ?",
+            [email]
         )
 
         if (usuarios.length === 0) {
@@ -270,7 +275,7 @@ app.post("/usuarios/login", async (req, res) => {
             usuario: {
                 id: usuario.usuario_id,
                 nome: usuario.nome,
-                email: usuario.login // retorna como email pro front
+                email: usuario.login
             }
         })
 
@@ -288,7 +293,6 @@ app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`)
 })
 
-
 app.get("/test-db", async (req, res) => {
     try {
         const [rows] = await db.promise().query("SELECT 1 + 1 AS result");
@@ -296,4 +300,4 @@ app.get("/test-db", async (req, res) => {
     } catch (err) {
         res.status(500).json(err);
     }
-});
+})
