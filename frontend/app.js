@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
 
-        window.location.href = "index.html";
+        window.location.href = "dashboard.html";
 
       } catch (err) {
         alert("Erro ao conectar com o servidor.");
@@ -71,6 +71,34 @@ try {
 } catch (err) {
   msg.textContent = "Erro ao conectar com o servidor.";
   msg.className = "form-acesso__mensagem erro";
+}
+
+
+// ================= DASHBOARD =================
+
+const usuarioSalvo = sessionStorage.getItem("usuario");
+
+if (window.location.pathname.includes("dashboard.html")) {
+
+  if (!usuarioSalvo) {
+    alert("Você precisa estar logado.");
+    window.location.href = "login.html";
+  } else {
+    const usuario = JSON.parse(usuarioSalvo);
+
+    const nomeSpan = document.getElementById("usuario-nome");
+    if (nomeSpan) {
+      nomeSpan.textContent = usuario.nome;
+    }
+  }
+
+  const btnLogout = document.getElementById("logout");
+  if (btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      sessionStorage.removeItem("usuario");
+      window.location.href = "login.html";
+    });
+  }
 }
 
 });
