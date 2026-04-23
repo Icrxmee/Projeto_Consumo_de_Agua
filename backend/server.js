@@ -208,8 +208,8 @@ app.post("/usuarios/cadastro", async (req, res) => {
 
     try {
         const [usuarioExistente] = await db.promise().query(
-            "SELECT * FROM TbUsuarios WHERE login = ?",
-            [email] // email vira login
+            "SELECT usuario_id FROM TbUsuarios WHERE login = ?",
+            [email]
         )
 
         if (usuarioExistente.length > 0) {
@@ -219,7 +219,9 @@ app.post("/usuarios/cadastro", async (req, res) => {
         const senhaHash = await bcrypt.hash(senha, 10)
 
         const [result] = await db.promise().query(
-            "INSERT INTO TbUsuarios (nome, login, senha) VALUES (?, ?, ?)",
+            `INSERT INTO TbUsuarios 
+            (nome, login, senha, atualizado_em) 
+            VALUES (?, ?, ?, NOW())`,
             [nome, email, senhaHash]
         )
 
@@ -229,8 +231,11 @@ app.post("/usuarios/cadastro", async (req, res) => {
         })
 
     } catch (err) {
-        console.error("Erro ao cadastrar usuário:", err)
-        res.status(500).json({ erro: "Erro ao cadastrar usuário" })
+        console.error("ERRO REAL DO MYSQL:", err) 
+        res.status(500).json({ 
+            erro: "Erro ao cadastrar usuário",
+            detalhe: err.message 
+        })
     }
 })
 
