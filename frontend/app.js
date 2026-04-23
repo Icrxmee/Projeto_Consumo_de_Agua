@@ -1,5 +1,5 @@
 (function () {
-  const API_BASE = window.API_BASE || "http://localhost:3000";
+  const API_BASE = "https://api-consumo-agua.onrender.com";
 
   const formLogin = document.getElementById("form-login");
 
@@ -7,7 +7,8 @@
     formLogin.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const nome = document.getElementById("login-nome").value.trim();
+      const nomeInput = document.getElementById("login-nome");
+      const nome = nomeInput ? nomeInput.value.trim() : ""; 
       const email = document.getElementById("login-email").value.trim();
       const senha = document.getElementById("login-senha").value;
 
@@ -40,16 +41,14 @@
     });
   }
 
-  // =========================
-  // CADASTRO (SÓ RODA NA INDEX)
-  // =========================
   const formCadastro = document.getElementById("form-cadastro");
 
   if (formCadastro) {
     formCadastro.addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const nome = document.getElementById("cadastro-nome").value.trim();
+      const nomeInput = document.getElementById("login-nome");
+      const nome = nomeInput ? nomeInput.value.trim() : "";
       const email = document.getElementById("cadastro-email").value.trim();
       const senha = document.getElementById("cadastro-senha").value;
 

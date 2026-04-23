@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastro - Gerenciamento de Água</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="pagina-login">
+
+  <div class="pagina-login__card">
+    <h1 class="pagina-login__titulo">Cadastro</h1>
+
+    <form id="form-cadastro" class="form-acesso form-acesso--login-pagina" novalidate>
+
+      <label class="form-acesso__label">Nome</label>
+      <input class="form-acesso__input form-acesso__input--login-pagina" 
+             type="text" id="cadastro-nome" required>
+
+      <label class="form-acesso__label">E-mail</label>
+      <input class="form-acesso__input form-acesso__input--login-pagina" 
+             type="email" id="cadastro-email" required>
+
+      <label class="form-acesso__label">Senha</label>
+      <input class="form-acesso__input form-acesso__input--login-pagina" 
+             type="password" id="cadastro-senha" required>
+
+      <p id="cadastro-mensagem" class="form-acesso__mensagem"></p>
+
+      <button type="submit" class="btn-principal btn-principal--enviar pagina-login__btn-enviar">
+        Criar conta
+      </button>
+    </form>
+
+    <p class="pagina-login__rodape">
+      Já tem conta?
+      <a href="login.html">Fazer login</a>
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
