@@ -46,42 +46,31 @@ document.addEventListener("DOMContentLoaded", function () {
   // =========================
   // CADASTRO
   // =========================
-  const formCadastro = document.getElementById("form-cadastro");
+  const msg = document.getElementById("cadastro-mensagem");
 
-  if (formCadastro) {
-    formCadastro.addEventListener("submit", async function (e) {
-      e.preventDefault();
+try {
+  const res = await fetch(API_BASE + "/usuarios/cadastro", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nome, email, senha }),
+  });
 
-      const nome = document.getElementById("cadastro-nome").value.trim();
-      const email = document.getElementById("cadastro-email").value.trim();
-      const senha = document.getElementById("cadastro-senha").value;
+  const data = await res.json();
 
-      if (!nome || !email || !senha) {
-        alert("Preencha todos os campos.");
-        return;
-      }
-
-      try {
-        const res = await fetch(API_BASE + "/usuarios/cadastro", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nome, email, senha }),
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          alert(data.erro || "Erro ao cadastrar.");
-          return;
-        }
-
-        alert("Cadastro realizado com sucesso!");
-        formCadastro.reset();
-
-      } catch (err) {
-        alert("Erro ao conectar com o servidor.");
-      }
-    });
+  if (!res.ok) {
+    msg.textContent = data.erro || "Erro ao cadastrar.";
+    msg.className = "form-acesso__mensagem erro";
+    return;
   }
+
+  msg.textContent = "Cadastro realizado com sucesso!";
+  msg.className = "form-acesso__mensagem sucesso";
+
+  formCadastro.reset();
+
+} catch (err) {
+  msg.textContent = "Erro ao conectar com o servidor.";
+  msg.className = "form-acesso__mensagem erro";
+}
 
 });

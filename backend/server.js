@@ -65,6 +65,11 @@ app.post("/imoveis", (req, res) => {
     db.query(sql, [endereco, valor, area, proprietario_id, imovel_tipo_id], (err, result) => {
         if (err) {
             console.error("Erro ao cadastrar imóvel:", err)
+
+            if (err.code === "ER_DUP_ENTRY") {
+                return res.status(400).json({ erro: "Imóvel duplicado" })
+            }
+
             return res.status(500).json({ 
                 erro: "Erro ao cadastrar imóvel",
                 detalhe: err.message
@@ -81,7 +86,6 @@ app.post("/imoveis", (req, res) => {
 // ==================== MEDIDORES ====================
 
 app.get("/medidores", (req, res) => {
-    // NÃO EXISTE tabela medidor → adaptado para tbmedicao
     const sql = "SELECT * FROM tbmedicao"
 
     db.query(sql, (err, result) => {
@@ -95,7 +99,6 @@ app.get("/medidores", (req, res) => {
 })
 
 app.post("/medidores", (req, res) => {
-    // adaptado → vira medição
     const { imovel_id, leitura } = req.body
 
     const sql = `
@@ -106,6 +109,11 @@ app.post("/medidores", (req, res) => {
     db.query(sql, [imovel_id, leitura], (err, result) => {
         if (err) {
             console.error("Erro ao cadastrar medidor:", err)
+
+            if (err.code === "ER_DUP_ENTRY") {
+                return res.status(400).json({ erro: "Registro duplicado" })
+            }
+
             return res.status(500).json({ erro: "Erro ao cadastrar medidor" })
         }
 
@@ -159,6 +167,11 @@ app.post("/medicoes", (req, res) => {
     db.query(sql, [leitura, imovel_id], (err, result) => {
         if (err) {
             console.error("Erro ao cadastrar medição:", err)
+
+            if (err.code === "ER_DUP_ENTRY") {
+                return res.status(400).json({ erro: "Medição duplicada" })
+            }
+
             return res.status(500).json({
                 erro: "Erro ao cadastrar medição",
                 detalhe: err.message
@@ -175,7 +188,6 @@ app.post("/medicoes", (req, res) => {
 // ==================== CONSUMO ====================
 
 app.get("/consumo", (req, res) => {
-    // adaptado para seu modelo REAL
     const sql = `
         SELECT 
             i.endereco AS imovel,
@@ -236,7 +248,14 @@ app.post("/usuarios/cadastro", async (req, res) => {
         })
 
     } catch (err) {
-        console.error("ERRO REAL DO MYSQL:", err) 
+        console.error("ERRO REAL DO MYSQL:", err)
+
+        if (err.code === "ER_DUP_ENTRY") {
+            return res.status(400).json({
+                erro: "Email já cadastrado"
+            })
+        }
+
         res.status(500).json({ 
             erro: "Erro ao cadastrar usuário",
             detalhe: err.message 
