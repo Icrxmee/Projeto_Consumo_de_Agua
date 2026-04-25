@@ -46,59 +46,81 @@ document.addEventListener("DOMContentLoaded", function () {
   // =========================
   // CADASTRO
   // =========================
-  const msg = document.getElementById("cadastro-mensagem");
+  const formCadastro = document.getElementById("form-cadastro");
 
-try {
-  const res = await fetch(API_BASE + "/usuarios/cadastro", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nome, email, senha }),
-  });
+  if (formCadastro) {
+    formCadastro.addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-  const data = await res.json();
+      const nome = document.getElementById("cadastro-nome").value.trim();
+      const email = document.getElementById("cadastro-email").value.trim();
+      const senha = document.getElementById("cadastro-senha").value;
 
-  if (!res.ok) {
-    msg.textContent = data.erro || "Erro ao cadastrar.";
-    msg.className = "form-acesso__mensagem erro";
-    return;
-  }
+      const msg = document.getElementById("cadastro-mensagem");
 
-  msg.textContent = "Cadastro realizado com sucesso!";
-  msg.className = "form-acesso__mensagem sucesso";
+      if (!nome || !email || !senha) {
+        msg.textContent = "Preencha todos os campos.";
+        msg.className = "form-acesso__mensagem erro";
+        return;
+      }
 
-  formCadastro.reset();
+      try {
+        const res = await fetch(API_BASE + "/usuarios/cadastro", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nome, email, senha }),
+        });
 
-} catch (err) {
-  msg.textContent = "Erro ao conectar com o servidor.";
-  msg.className = "form-acesso__mensagem erro";
-}
+        const data = await res.json().catch(() => ({}));
 
+        if (!res.ok) {
+          msg.textContent = data.erro || "Erro ao cadastrar.";
+          msg.className = "form-acesso__mensagem erro";
+          return;
+        }
 
-// ================= DASHBOARD =================
+        msg.textContent = "Cadastro realizado com sucesso!";
+        msg.className = "form-acesso__mensagem sucesso";
 
-const usuarioSalvo = sessionStorage.getItem("usuario");
+        formCadastro.reset();
 
-if (window.location.pathname.includes("dashboard.html")) {
+        // 👉 REDIRECIONAMENTO CORRETO
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1500);
 
-  if (!usuarioSalvo) {
-    alert("Você precisa estar logado.");
-    window.location.href = "login.html";
-  } else {
-    const usuario = JSON.parse(usuarioSalvo);
-
-    const nomeSpan = document.getElementById("usuario-nome");
-    if (nomeSpan) {
-      nomeSpan.textContent = usuario.nome;
-    }
-  }
-
-  const btnLogout = document.getElementById("logout");
-  if (btnLogout) {
-    btnLogout.addEventListener("click", () => {
-      sessionStorage.removeItem("usuario");
-      window.location.href = "login.html";
+      } catch (err) {
+        msg.textContent = "Erro ao conectar com o servidor.";
+        msg.className = "form-acesso__mensagem erro";
+      }
     });
   }
-}
+
+  // ================= DASHBOARD =================
+
+  const usuarioSalvo = sessionStorage.getItem("usuario");
+
+  if (window.location.pathname.includes("dashboard.html")) {
+
+    if (!usuarioSalvo) {
+      alert("Você precisa estar logado.");
+      window.location.href = "login.html";
+    } else {
+      const usuario = JSON.parse(usuarioSalvo);
+
+      const nomeSpan = document.getElementById("usuario-nome");
+      if (nomeSpan) {
+        nomeSpan.textContent = usuario.nome;
+      }
+    }
+
+    const btnLogout = document.getElementById("logout");
+    if (btnLogout) {
+      btnLogout.addEventListener("click", () => {
+        sessionStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      });
+    }
+  }
 
 });
