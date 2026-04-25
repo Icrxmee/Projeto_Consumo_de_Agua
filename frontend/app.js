@@ -107,11 +107,37 @@ document.addEventListener("DOMContentLoaded", function () {
       window.location.href = "login.html";
     } else {
       const usuario = JSON.parse(usuarioSalvo);
+      const nomeCompleto = (usuario.nome || "").trim();
+      const primeiroNome = nomeCompleto ? nomeCompleto.split(/\s+/)[0] : "Usuário";
 
       const nomeSpan = document.getElementById("usuario-nome");
       if (nomeSpan) {
-        nomeSpan.textContent = usuario.nome;
+        nomeSpan.textContent = nomeCompleto || "Usuário";
       }
+
+      const nomeTopo = document.getElementById("usuario-primeiro-nome");
+      if (nomeTopo) {
+        nomeTopo.textContent = primeiroNome;
+      }
+    }
+
+    const btnMenuUsuario = document.getElementById("usuario-menu-btn");
+    const menuDropdown = document.getElementById("usuario-menu-dropdown");
+
+    if (btnMenuUsuario && menuDropdown) {
+      btnMenuUsuario.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const menuAberto = !menuDropdown.hidden;
+        menuDropdown.hidden = menuAberto;
+        btnMenuUsuario.setAttribute("aria-expanded", String(!menuAberto));
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!menuDropdown.contains(e.target) && !btnMenuUsuario.contains(e.target)) {
+          menuDropdown.hidden = true;
+          btnMenuUsuario.setAttribute("aria-expanded", "false");
+        }
+      });
     }
 
     const btnLogout = document.getElementById("logout");

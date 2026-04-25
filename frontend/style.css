@@ -340,6 +340,58 @@ h1{
     text-decoration: underline;
 }
 
+.pagina-dashboard{
+    margin: 0;
+}
+
+.conteiner-dashboard{
+    display: block;
+    max-width: 620px;
+    margin-top: 8rem !important;
+    margin-left: 5rem !important;
+    color: #eceff1;
+    background: rgba(11, 21, 36, 0.75);
+}
+
+.menu-usuario{
+    position: relative;
+}
+
+.menu-usuario__dropdown{
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.35rem);
+    min-width: 9rem;
+    padding: 0.4rem;
+    border: 1px solid #ffffff57;
+    border-radius: 8px;
+    background: rgba(11, 21, 36, 0.95);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+.menu-usuario__logout{
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: transparent;
+    color: #eceff1;
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.menu-usuario__logout:hover{
+    background: #1b4f92;
+}
+
+.menu-usuario__logout:focus-visible{
+    outline: 2px solid #39ff14;
+    outline-offset: 2px;
+}
+
 
 
 
