@@ -152,7 +152,9 @@ app.get("/medicoes", (req, res) => {
     })
 })
 
-app.post("/medicoes", (req, res) => {
+// ATUALIZAR MEDIÇÃO
+app.put("/medicoes/:id", (req, res) => {
+    const { id } = req.params
     const { leitura, imovel_id } = req.body
 
     if (!leitura || !imovel_id) {
@@ -160,28 +162,54 @@ app.post("/medicoes", (req, res) => {
     }
 
     const sql = `
-        INSERT INTO tbmedicao (leitura, datahora, imovel_id)
-        VALUES (?, NOW(), ?)
+        UPDATE tbmedicao 
+        SET leitura = ?, imovel_id = ?
+        WHERE medicao_id = ?
     `
 
-    db.query(sql, [leitura, imovel_id], (err, result) => {
+    db.query(sql, [leitura, imovel_id, id], (err, result) => {
         if (err) {
-            console.error("Erro ao cadastrar medição:", err)
+            console.error("Erro ao atualizar medição:", err)
 
             if (err.code === "ER_DUP_ENTRY") {
                 return res.status(400).json({ erro: "Medição duplicada" })
             }
 
             return res.status(500).json({
-                erro: "Erro ao cadastrar medição",
+                erro: "Erro ao atualizar medição",
                 detalhe: err.message
             })
         }
 
-        res.status(201).json({
-            mensagem: "Medição cadastrada com sucesso",
-            id: result.insertId
-        })
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ erro: "Medição não encontrada" })
+        }
+
+        res.json({ mensagem: "Medição atualizada com sucesso" })
+    })
+})
+
+// DELETAR MEDIÇÃO
+app.delete("/medicoes/:id", (req, res) => {
+    const { id } = req.params
+
+    const sql = "DELETE FROM tbmedicao WHERE medicao_id = ?"
+
+    db.query(sql, [id], (err, result) => {
+        if (err) {
+            console.error("Erro ao excluir medição:", err)
+
+            return res.status(500).json({
+                erro: "Erro ao excluir medição",
+                detalhe: err.message
+            })
+        }
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ erro: "Medição não encontrada" })
+        }
+
+        res.json({ mensagem: "Medição excluída com sucesso" })
     })
 })
 
