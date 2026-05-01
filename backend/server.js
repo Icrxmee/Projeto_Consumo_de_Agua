@@ -133,6 +133,7 @@ app.get("/medicoes", (req, res) => {
             m.leitura,
             m.datahora,
             i.endereco,
+            m.imovel_id,
             p.nome AS proprietario,
             t.descricao AS tipo
         FROM tbmedicao m

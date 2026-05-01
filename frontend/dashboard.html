@@ -1,37 +1,26 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Gerenciamento de Água</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
-</head>
-<body class="pagina-dashboard">
-  <h1><span class="h1-titulo">Gerenciamento de Água</span></h1>
+<h2>Medições</h2>
 
-  <div class="barra-topo">
-    <div class="menu-usuario">
-      <button type="button" id="usuario-menu-btn" class="btn-principal" aria-haspopup="menu" aria-expanded="false">
-        <span id="usuario-primeiro-nome">Usuário</span>
-      </button>
+<h2>Nova Medição</h2>
 
-      <div id="usuario-menu-dropdown" class="menu-usuario__dropdown" role="menu" hidden>
-        <button type="button" id="logout" class="menu-usuario__logout" role="menuitem">Logout</button>
-      </div>
-    </div>
-  </div>
+<form id="form-medicao">
+  <input type="number" id="leitura" placeholder="Leitura (ex: 120)" required>
 
-  <div id="conteiner-2" class="conteiner-dashboard">
-    <h2>Bem-vindo(a), <span id="usuario-nome"></span> 👋</h2>
-    <p class="conteiner-2-texto">
-      Seu painel está pronto para acompanhar as informações do seu consumo de água.
-      Use esta área para consultar seus dados sempre que precisar.
-    </p>
-  </div>
+  <select id="imovel_id" required>
+    <option value="">Selecione um imóvel</option>
+  </select>
 
-  <script src="app.js"></script>
-</body>
-</html>
+  <button type="submit">Cadastrar</button>
+</form>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Leitura</th>
+      <th>Imóvel</th>
+      <th>Data</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody id="tabela-medicoes"></tbody>
+</table>
