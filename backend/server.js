@@ -360,6 +360,97 @@ app.post("/usuarios/login", async (req, res) => {
     }
 })
 
+// LISTAR USUÁRIOS (SEM SENHA)
+app.get("/usuarios", async (req, res) => {
+    try {
+        const [usuarios] = await db.promise().query(
+            `SELECT usuario_id, nome, login, atualizado_em
+             FROM tbusuarios
+             ORDER BY usuario_id ASC`
+        )
+
+        res.json(usuarios.map((u) => ({
+            usuario_id: u.usuario_id,
+            nome: u.nome,
+            email: u.login,
+            atualizado_em: u.atualizado_em
+        })))
+    } catch (err) {
+        console.error("Erro ao listar usuários:", err)
+        res.status(500).json({ erro: "Erro ao listar usuários" })
+    }
+})
+
+// EDITAR USUÁRIO
+app.put("/usuarios/:id", async (req, res) => {
+    const { id } = req.params
+    const { nome, email, senha } = req.body
+
+    if (!nome || !email) {
+        return res.status(400).json({ erro: "Nome e email são obrigatórios" })
+    }
+
+    try {
+        const [usuariosComMesmoEmail] = await db.promise().query(
+            "SELECT usuario_id FROM tbusuarios WHERE login = ? AND usuario_id <> ?",
+            [email, id]
+        )
+
+        if (usuariosComMesmoEmail.length > 0) {
+            return res.status(400).json({ erro: "Email já cadastrado para outro usuário" })
+        }
+
+        let sql = `
+            UPDATE tbusuarios
+            SET nome = ?, login = ?, atualizado_em = NOW()
+            WHERE usuario_id = ?
+        `
+        let params = [nome, email, id]
+
+        if (senha && String(senha).trim()) {
+            const senhaHash = await bcrypt.hash(String(senha), 10)
+            sql = `
+                UPDATE tbusuarios
+                SET nome = ?, login = ?, senha = ?, atualizado_em = NOW()
+                WHERE usuario_id = ?
+            `
+            params = [nome, email, senhaHash, id]
+        }
+
+        const [result] = await db.promise().query(sql, params)
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ erro: "Usuário não encontrado" })
+        }
+
+        res.json({ mensagem: "Usuário atualizado com sucesso" })
+    } catch (err) {
+        console.error("Erro ao editar usuário:", err)
+        res.status(500).json({ erro: "Erro ao editar usuário" })
+    }
+})
+
+// EXCLUIR USUÁRIO
+app.delete("/usuarios/:id", async (req, res) => {
+    const { id } = req.params
+
+    try {
+        const [result] = await db.promise().query(
+            "DELETE FROM tbusuarios WHERE usuario_id = ?",
+            [id]
+        )
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ erro: "Usuário não encontrado" })
+        }
+
+        res.json({ mensagem: "Usuário excluído com sucesso" })
+    } catch (err) {
+        console.error("Erro ao excluir usuário:", err)
+        res.status(500).json({ erro: "Erro ao excluir usuário" })
+    }
+})
+
 // ==================== SERVIDOR ====================
 
 const PORT = process.env.PORT || 3000

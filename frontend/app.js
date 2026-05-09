@@ -152,11 +152,13 @@ document.addEventListener("DOMContentLoaded", function () {
     // ================= MEDIÇÕES =================
 
     async function carregarMedicoes() {
+      const tabela = document.getElementById("tabela-medicoes");
+      if (!tabela) return;
+
       try {
         const res = await fetch(API_BASE + "/medicoes");
         const dados = await res.json();
 
-        const tabela = document.getElementById("tabela-medicoes");
         tabela.innerHTML = "";
 
         dados.forEach(m => {
@@ -183,6 +185,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // DISPONIBILIZA GLOBAL (pro botão funcionar)
     window.excluir = async function (id) {
+      const tabela = document.getElementById("tabela-medicoes");
+      if (!tabela) return;
+
       if (!confirm("Deseja realmente excluir?")) return;
 
       await fetch(API_BASE + "/medicoes/" + id, {
@@ -194,6 +199,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     window.editar = async function (id, leituraAtual) {
+      const tabela = document.getElementById("tabela-medicoes");
+      if (!tabela) return;
+
       const novaLeitura = prompt("Nova leitura:", leituraAtual);
 
       if (!novaLeitura) return;
@@ -255,6 +263,160 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // CHAMA AQUI (CORRETO AGORA)
     carregarMedicoes();
+
+    // ================= USUÁRIOS (CRUD) =================
+
+    const tabelaUsuarios = document.getElementById("tabela-usuarios");
+    const formUsuario = document.getElementById("form-usuario");
+
+    if (tabelaUsuarios && formUsuario) {
+      const inputId = document.getElementById("usuario-id");
+      const inputNome = document.getElementById("usuario-nome-input");
+      const inputEmail = document.getElementById("usuario-email-input");
+      const inputSenha = document.getElementById("usuario-senha-input");
+      const mensagem = document.getElementById("usuario-mensagem");
+      const btnCancelar = document.getElementById("cancelar-edicao");
+
+      function setMensagem(texto, tipo) {
+        if (!mensagem) return;
+        mensagem.textContent = texto || "";
+        mensagem.className = "form-acesso__mensagem";
+        if (tipo) mensagem.classList.add(tipo);
+      }
+
+      function limparFormularioUsuario() {
+        inputId.value = "";
+        inputNome.value = "";
+        inputEmail.value = "";
+        inputSenha.value = "";
+      }
+
+      async function carregarUsuarios() {
+        try {
+          const res = await fetch(API_BASE + "/usuarios");
+          const usuarios = await res.json().catch(() => []);
+
+          if (!res.ok) {
+            setMensagem("Erro ao listar usuários.", "erro");
+            return;
+          }
+
+          tabelaUsuarios.innerHTML = "";
+
+          usuarios.forEach((u) => {
+            const tr = document.createElement("tr");
+
+            tr.innerHTML = `
+              <td>${u.usuario_id}</td>
+              <td>${u.nome}</td>
+              <td>${u.email}</td>
+              <td>
+                <button class="btn-principal" data-editar-id="${u.usuario_id}">Editar</button>
+                <button class="btn-principal" data-excluir-id="${u.usuario_id}">Excluir</button>
+              </td>
+            `;
+
+            tabelaUsuarios.appendChild(tr);
+          });
+        } catch (err) {
+          setMensagem("Erro ao conectar com a API.", "erro");
+        }
+      }
+
+      tabelaUsuarios.addEventListener("click", async (e) => {
+        const botao = e.target.closest("button");
+        if (!botao) return;
+
+        const editarId = botao.getAttribute("data-editar-id");
+        const excluirId = botao.getAttribute("data-excluir-id");
+
+        if (editarId) {
+          const linha = botao.closest("tr");
+          if (!linha) return;
+
+          inputId.value = editarId;
+          inputNome.value = linha.children[1]?.textContent || "";
+          inputEmail.value = linha.children[2]?.textContent || "";
+          inputSenha.value = "";
+          setMensagem("Modo edição: informe nova senha apenas se quiser alterar.", "");
+        }
+
+        if (excluirId) {
+          if (!confirm("Deseja realmente excluir este usuário?")) return;
+
+          try {
+            const res = await fetch(API_BASE + "/usuarios/" + excluirId, {
+              method: "DELETE"
+            });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+              setMensagem(data.erro || "Erro ao excluir usuário.", "erro");
+              return;
+            }
+
+            setMensagem("Usuário excluído com sucesso.", "sucesso");
+            if (inputId.value === excluirId) limparFormularioUsuario();
+            carregarUsuarios();
+          } catch (err) {
+            setMensagem("Erro ao conectar com a API.", "erro");
+          }
+        }
+      });
+
+      formUsuario.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const id = inputId.value.trim();
+        const nome = inputNome.value.trim();
+        const email = inputEmail.value.trim();
+        const senha = inputSenha.value;
+
+        if (!nome || !email) {
+          setMensagem("Nome e e-mail são obrigatórios.", "erro");
+          return;
+        }
+
+        const criando = !id;
+        if (criando && !senha) {
+          setMensagem("A senha é obrigatória ao incluir usuário.", "erro");
+          return;
+        }
+
+        const endpoint = criando ? "/usuarios/cadastro" : "/usuarios/" + id;
+        const method = criando ? "POST" : "PUT";
+        const body = criando ? { nome, email, senha } : { nome, email, senha };
+
+        try {
+          const res = await fetch(API_BASE + endpoint, {
+            method,
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            setMensagem(data.erro || "Erro ao salvar usuário.", "erro");
+            return;
+          }
+
+          setMensagem(criando ? "Usuário cadastrado com sucesso." : "Usuário atualizado com sucesso.", "sucesso");
+          limparFormularioUsuario();
+          carregarUsuarios();
+        } catch (err) {
+          setMensagem("Erro ao conectar com a API.", "erro");
+        }
+      });
+
+      if (btnCancelar) {
+        btnCancelar.addEventListener("click", () => {
+          limparFormularioUsuario();
+          setMensagem("", "");
+        });
+      }
+
+      carregarUsuarios();
+    }
   }
 
 });

@@ -1,26 +1,55 @@
-<h2>Medições</h2>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Gerenciamento de Água</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="pagina-dashboard">
+  <div class="pagina-login__card" style="max-width: 920px; transform: none; margin-top: 2rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+      <h1 class="pagina-login__titulo" style="margin:0;">Usuários - CRUD</h1>
+      <div class="menu-usuario">
+        <button id="usuario-menu-btn" class="btn-principal" aria-expanded="false">Olá, <span id="usuario-primeiro-nome">Usuário</span></button>
+        <div id="usuario-menu-dropdown" class="menu-usuario__dropdown" hidden>
+          <button id="logout" class="menu-usuario__logout">Sair</button>
+        </div>
+      </div>
+    </div>
 
-<h2>Nova Medição</h2>
+    <p style="text-align:left; margin:.5rem 0 1rem;">Logado como: <strong id="usuario-nome">Usuário</strong></p>
 
-<form id="form-medicao">
-  <input type="number" id="leitura" placeholder="Leitura (ex: 120)" required>
+    <h2 style="text-align:left;">Incluir / Editar Usuário</h2>
+    <form id="form-usuario" class="form-acesso" style="display:grid; grid-template-columns: 1fr 1fr; gap:.5rem;">
+      <input type="hidden" id="usuario-id">
+      <input class="form-acesso__input form-acesso__input--login-pagina" type="text" id="usuario-nome-input" placeholder="Nome" required>
+      <input class="form-acesso__input form-acesso__input--login-pagina" type="email" id="usuario-email-input" placeholder="E-mail" required>
+      <input class="form-acesso__input form-acesso__input--login-pagina" type="password" id="usuario-senha-input" placeholder="Senha (obrigatória ao incluir)">
+      <div style="display:flex; gap:.5rem; align-items:center;">
+        <button type="submit" class="btn-principal">Salvar</button>
+        <button type="button" id="cancelar-edicao" class="btn-principal">Cancelar</button>
+      </div>
+    </form>
+    <p id="usuario-mensagem" class="form-acesso__mensagem"></p>
 
-  <select id="imovel_id" required>
-    <option value="">Selecione um imóvel</option>
-  </select>
+    <h2 style="text-align:left; margin-top:1rem;">Usuários Cadastrados</h2>
+    <table border="1" style="width:100%; border-collapse:collapse; background:#fff; color:#111;">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nome</th>
+          <th>E-mail</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabela-usuarios"></tbody>
+    </table>
+  </div>
 
-  <button type="submit">Cadastrar</button>
-</form>
-
-<table border="1">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Leitura</th>
-      <th>Imóvel</th>
-      <th>Data</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody id="tabela-medicoes"></tbody>
-</table>
+  <script src="app.js"></script>
+</body>
+</html>
