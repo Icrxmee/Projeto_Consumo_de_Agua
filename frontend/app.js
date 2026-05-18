@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
 
   const API_BASE = "https://api-consumo-agua.onrender.com";
+  window.API_BASE = API_BASE;
 
   // =========================
   // LOGIN
@@ -33,7 +34,15 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
-        sessionStorage.setItem("usuario", JSON.stringify(data.usuario));
+        const usuarioLogin = data.usuario || {};
+        if (!usuarioLogin.perfil) {
+          const login = String(usuarioLogin.email || "").trim().toLowerCase();
+          usuarioLogin.perfil =
+            login.startsWith("adm") || login.includes("administrador")
+              ? "Administrador"
+              : "Usuário";
+        }
+        sessionStorage.setItem("usuario", JSON.stringify(usuarioLogin));
 
         window.location.href = "dashboard.html";
 
@@ -108,6 +117,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const usuario = JSON.parse(usuarioSalvo);
+    if (!usuario.perfil) {
+      const login = String(usuario.email || "").trim().toLowerCase();
+      usuario.perfil =
+        login.startsWith("adm") || login.includes("administrador")
+          ? "Administrador"
+          : "Usuário";
+      sessionStorage.setItem("usuario", JSON.stringify(usuario));
+    }
     const nomeCompleto = (usuario.nome || "").trim();
     const primeiroNome = nomeCompleto ? nomeCompleto.split(/\s+/)[0] : "Usuário";
 
@@ -117,8 +134,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const nomeTopo = document.getElementById("usuario-primeiro-nome");
     if (nomeTopo) nomeTopo.textContent = primeiroNome;
 
-    
-
+    const perfilBadge = document.getElementById("usuario-perfil-badge");
+    if (perfilBadge && usuario.perfil) {
+      perfilBadge.textContent = usuario.perfil;
+      perfilBadge.hidden = false;
+      perfilBadge.classList.toggle("dashboard-perfil--admin", usuario.perfil === "Administrador");
+    }
 
     // MENU USUÁRIO
     const btnMenuUsuario = document.getElementById("usuario-menu-btn");
@@ -148,121 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "login.html";
       });
     }
-
-    // ================= MEDIÇÕES =================
-
-    async function carregarMedicoes() {
-      const tabela = document.getElementById("tabela-medicoes");
-      if (!tabela) return;
-
-      try {
-        const res = await fetch(API_BASE + "/medicoes");
-        const dados = await res.json();
-
-        tabela.innerHTML = "";
-
-        dados.forEach(m => {
-          const tr = document.createElement("tr");
-
-          tr.innerHTML = `
-            <td>${m.medicao_id}</td>
-            <td>${m.leitura}</td>
-            <td>${m.endereco}</td>
-            <td>${new Date(m.datahora).toLocaleDateString()}</td>
-            <td>
-              <button onclick="editar(${m.medicao_id}, ${m.leitura})">Editar</button>
-              <button onclick="excluir(${m.medicao_id})">Excluir</button>
-            </td>
-          `;
-
-          tabela.appendChild(tr);
-        });
-
-      } catch (err) {
-        console.error("Erro ao carregar medições", err);
-      }
-    }
-
-    // DISPONIBILIZA GLOBAL (pro botão funcionar)
-    window.excluir = async function (id) {
-      const tabela = document.getElementById("tabela-medicoes");
-      if (!tabela) return;
-
-      if (!confirm("Deseja realmente excluir?")) return;
-
-      await fetch(API_BASE + "/medicoes/" + id, {
-        method: "DELETE"
-      });
-
-      alert("Excluído com sucesso!");
-      carregarMedicoes();
-    }
-
-    window.editar = async function (id, leituraAtual) {
-      const tabela = document.getElementById("tabela-medicoes");
-      if (!tabela) return;
-
-      const novaLeitura = prompt("Nova leitura:", leituraAtual);
-
-      if (!novaLeitura) return;
-
-      await fetch(API_BASE + "/medicoes/" + id, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          leitura: Number(novaLeitura),
-          imovel_id: 1 // temporário
-        })
-      });
-
-      alert("Atualizado com sucesso!");
-      carregarMedicoes();
-    }
-
-    // FORMULÁRIO
-    const formMedicao = document.getElementById("form-medicao");
-
-    if (formMedicao) {
-      formMedicao.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const leitura = document.getElementById("leitura").value;
-        const imovel_id = document.getElementById("imovel_id").value;
-
-        if (!leitura || !imovel_id) {
-          alert("Preencha todos os campos!");
-          return;
-        }
-
-        try {
-          const res = await fetch(API_BASE + "/medicoes", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              leitura: Number(leitura),
-              imovel_id: Number(imovel_id)
-            })
-          });
-
-          const data = await res.json();
-
-          if (!res.ok) {
-            alert(data.erro || "Erro ao cadastrar");
-            return;
-          }
-
-          alert("Medição cadastrada com sucesso!");
-          formMedicao.reset();
-          carregarMedicoes();
-
-        } catch (err) {
-          alert("Erro ao conectar com a API");
-        }
-      });
-    }
-
-    // CHAMA AQUI (CORRETO AGORA)
-    carregarMedicoes();
 
     // ================= USUÁRIOS (CRUD) =================
 
@@ -310,9 +216,10 @@ document.addEventListener("DOMContentLoaded", function () {
               <td>${u.usuario_id}</td>
               <td>${u.nome}</td>
               <td>${u.email}</td>
+              <td>${u.perfil || "Usuário"}</td>
               <td>
-                <button class="btn-principal" data-editar-id="${u.usuario_id}">Editar</button>
-                <button class="btn-principal" data-excluir-id="${u.usuario_id}">Excluir</button>
+                <button class="btn-principal btn-tabela" data-editar-id="${u.usuario_id}">Editar</button>
+                <button class="btn-principal btn-tabela btn-tabela--excluir" data-excluir-id="${u.usuario_id}">Excluir</button>
               </td>
             `;
 
@@ -335,8 +242,8 @@ document.addEventListener("DOMContentLoaded", function () {
           if (!linha) return;
 
           inputId.value = editarId;
-          inputNome.value = linha.children[1]?.textContent || "";
-          inputEmail.value = linha.children[2]?.textContent || "";
+          inputNome.value = linha.children[1]?.textContent?.trim() || "";
+          inputEmail.value = linha.children[2]?.textContent?.trim() || "";
           inputSenha.value = "";
           setMensagem("Modo edição: informe nova senha apenas se quiser alterar.", "");
         }

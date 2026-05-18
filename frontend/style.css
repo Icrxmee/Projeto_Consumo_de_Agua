@@ -392,6 +392,218 @@ h1{
     outline-offset: 2px;
 }
 
+/* ========== Dashboard admin (CRUD consumo — reversível) ========== */
+.dashboard-topo{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1rem;
+    padding: 0.65rem 1.25rem;
+    background: linear-gradient(180deg, #1a6fd4 0%, #1557a8 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    color: #eceff1;
+}
+
+.dashboard-topo__marca{
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.35rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.dashboard-topo__nav{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.dashboard-topo__link{
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.12);
+    color: #eceff1;
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.dashboard-topo__link:hover,
+.dashboard-topo__link--ativo{
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.dashboard-logado{
+    text-align: left;
+    margin: 0 0 1rem;
+    font-size: 0.9rem;
+}
+
+.dashboard-perfil{
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    background: rgba(176, 190, 197, 0.25);
+    color: #b0bec5;
+}
+
+.dashboard-perfil--admin{
+    background: rgba(57, 255, 20, 0.15);
+    color: #69f0ae;
+}
+
+.dashboard-painel__titulo{
+    font-family: "Bebas Neue", sans-serif;
+    font-size: 1.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #eceff1;
+    margin: 0 0 1rem;
+    text-align: left;
+    -webkit-text-stroke: 0;
+}
+
+.dashboard-secao-titulo{
+    text-align: left;
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    color: #b0bec5;
+}
+
+.form-acesso--grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    text-align: left;
+}
+
+.form-acesso--grid .form-acesso__label{
+    grid-column: 1 / -1;
+    margin-top: 0.25rem;
+}
+
+.dashboard-form-acoes{
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.dashboard-tabela-wrap{
+    overflow-x: auto;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.dashboard-tabela{
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    color: #111;
+    font-size: 0.875rem;
+}
+
+.dashboard-tabela th,
+.dashboard-tabela td{
+    padding: 0.5rem 0.65rem;
+    border: 1px solid #dee2e6;
+    text-align: left;
+}
+
+.dashboard-tabela thead{
+    background: #e9f2ff;
+}
+
+.dashboard-tabela .col-selecao{
+    width: 2.5rem;
+    text-align: center;
+}
+
+.btn-tabela{
+    font-size: 0.72rem;
+    padding: 0.2rem 0.5rem;
+    margin-right: 0.25rem;
+}
+
+.btn-tabela--excluir{
+    background: #c62828;
+}
+
+.btn-tabela--excluir:hover{
+    background: #8e0000;
+}
+
+.crud-toolbar{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.btn-crud{
+    border: none;
+    border-radius: 6px;
+    padding: 0.4rem 0.9rem;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn-crud--incluir,
+.btn-crud--editar,
+.btn-crud--imprimir{
+    background: #2072ec;
+}
+
+.btn-crud--incluir:hover,
+.btn-crud--editar:hover,
+.btn-crud--imprimir:hover{
+    background: #1b4f92;
+}
+
+.btn-crud--excluir{
+    background: #c62828;
+}
+
+.btn-crud--excluir:hover{
+    background: #8e0000;
+}
+
+.dashboard-form-consumo{
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.sr-only{
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@media (max-width: 640px){
+    .form-acesso--grid{
+        grid-template-columns: 1fr;
+    }
+}
+
 
 
 
