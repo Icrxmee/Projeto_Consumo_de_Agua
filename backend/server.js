@@ -12,6 +12,20 @@ app.use(cors({
 
 app.use(express.json())
 
+/** Perfil Administrador: coluna perfil no banco ou login iniciando com "adm". */
+function resolvePerfil(usuario) {
+    const perfilDb = usuario.perfil || usuario.tipo || usuario.role
+    if (perfilDb) {
+        const p = String(perfilDb).toLowerCase()
+        if (p.includes("admin") || p === "adm") return "Administrador"
+    }
+    const login = String(usuario.login || "").trim().toLowerCase()
+    if (login.startsWith("adm") || login.includes("administrador")) {
+        return "Administrador"
+    }
+    return "Usuário"
+}
+
 // LOG DE ROTAS
 app.use((req, res, next) => {
     console.log(`Rota acessada: ${req.method} ${req.url}`)
@@ -154,18 +168,19 @@ app.get("/medicoes", (req, res) => {
 })
 
 app.post("/medicoes", (req, res) => {
-    const { leitura, imovel_id } = req.body
+    const { leitura, imovel_id, datahora } = req.body
 
     if (!leitura || !imovel_id) {
         return res.status(400).json({ erro: "Preencha todos os campos" })
     }
 
-    const sql = `
-        INSERT INTO tbmedicao (leitura, datahora, imovel_id)
-        VALUES (?, NOW(), ?)
-    `
+    const sql = datahora
+        ? `INSERT INTO tbmedicao (leitura, datahora, imovel_id) VALUES (?, ?, ?)`
+        : `INSERT INTO tbmedicao (leitura, datahora, imovel_id) VALUES (?, NOW(), ?)`
 
-    db.query(sql, [leitura, imovel_id], (err, result) => {
+    const params = datahora ? [leitura, datahora, imovel_id] : [leitura, imovel_id]
+
+    db.query(sql, params, (err, result) => {
         if (err) {
             console.error("Erro ao cadastrar medição:", err)
 
@@ -188,15 +203,19 @@ app.post("/medicoes", (req, res) => {
 
 app.put("/medicoes/:id", (req, res) => {
     const { id } = req.params
-    const { leitura, imovel_id } = req.body
+    const { leitura, imovel_id, datahora } = req.body
 
-    const sql = `
-        UPDATE tbmedicao
-        SET leitura = ?, imovel_id = ?
-        WHERE medicao_id = ?
-    `
+    if (!leitura || !imovel_id) {
+        return res.status(400).json({ erro: "Leitura e imóvel são obrigatórios" })
+    }
 
-    db.query(sql, [leitura, imovel_id, id], (err, result) => {
+    const sql = datahora
+        ? `UPDATE tbmedicao SET leitura = ?, imovel_id = ?, datahora = ? WHERE medicao_id = ?`
+        : `UPDATE tbmedicao SET leitura = ?, imovel_id = ? WHERE medicao_id = ?`
+
+    const params = datahora ? [leitura, imovel_id, datahora, id] : [leitura, imovel_id, id]
+
+    db.query(sql, params, (err, result) => {
         if (err) {
             console.error("Erro ao atualizar medição:", err)
             return res.status(500).json({
@@ -350,7 +369,8 @@ app.post("/usuarios/login", async (req, res) => {
             usuario: {
                 id: usuario.usuario_id,
                 nome: usuario.nome,
-                email: usuario.login
+                email: usuario.login,
+                perfil: resolvePerfil(usuario)
             }
         })
 
@@ -373,6 +393,7 @@ app.get("/usuarios", async (req, res) => {
             usuario_id: u.usuario_id,
             nome: u.nome,
             email: u.login,
+            perfil: resolvePerfil(u),
             atualizado_em: u.atualizado_em
         })))
     } catch (err) {
